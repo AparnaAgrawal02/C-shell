@@ -54,27 +54,36 @@ int main()
         if (strcmp(arguments[0], "echo") == 0)
         {
             flag = 1;
-            //echo();
+            printf("hi");
+            echo();
         }
-        if (strcmp(arguments[0], "pwd") == 0)
+        else if (strcmp(arguments[0], "pwd") == 0)
         {
             flag = 1;
             pwd();
         }
-        if (strcmp(arguments[0], "cd") == 0)
+        else if (strcmp(arguments[0], "cd") == 0)
         {
             flag = 1;
             cd();
         }
-        if (strcmp(arguments[0], "ls") == 0)
+        else if (strcmp(arguments[0], "ls") == 0)
         {
             flag = 1;
             ls();
         }
-        if (strcmp(arguments[0], "history") == 0)
+        else if (strcmp(arguments[0], "pinfo") == 0)
+        {
+            flag = 1;
+            pinfo();
+        }
+        else if (strcmp(arguments[0], "history") == 0)
         {
             log_history(arguments[0]);
             read_history();
+        }
+        else if(arglength>0){
+            execute_system_commands();
         }
         if (flag == 1)
         {
@@ -82,6 +91,7 @@ int main()
         }
         while(arglength>0){
             free(arguments[arglength-1]);
+            arguments[arglength-1] = NULL;
             arglength--;
         }
     

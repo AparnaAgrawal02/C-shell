@@ -16,7 +16,7 @@ void echo()
     {
         if (arguments[i][0] == '\'')
         {
-            modified_string[strlen(modified_string) - 1] = "\0";
+            modified_string[strlen(modified_string) - 1] = '\0';
         }
         strcat(modified_string,arguments[i]);
         strcat(modified_string, " ");

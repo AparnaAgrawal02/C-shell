@@ -1,12 +1,16 @@
-#include <stdio.h>    
+#include <stdio.h>
 #include <sys/utsname.h>
 #include <string.h>
-#include<stdlib.h>
+#include <stdlib.h>
 #include "pwd.h"
 #include "prompt.h"
 #include "echo.h"
 #include "cd.h"
+#include "ls.h"
+#include "pinfo.h"
+#include "systemCommands.h"
 #include <sys/types.h>
+#include <sys/wait.h>
 #include <sys/stat.h>
 #include <fcntl.h>
 #include "history.h"
@@ -18,5 +22,5 @@
 #include <grp.h>
 
 extern char shell_path[PATH_MAX];
-char* arguments[256];
+char *arguments[256];
 extern int arglength;

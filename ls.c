@@ -80,19 +80,75 @@ void print_file_properties(struct stat stats)
   //time
   printf("%2d:%2d ", dt.tm_hour, dt.tm_min);
 }
+void list_all_files(char *directory, int aflag, int lflag)
+{
+  struct dirent **namelist;
+  struct stat stats;
+  int n;
+  char x = '\0';
+  // The  scandir()  function scans the directory dirp, calling filter() on each directory entry.  Entries for which filter() returns non‐
+  //      zero are stored in strings allocated via malloc(3), sorted using qsort(3) with the comparison function compar(), and collected in ar‐
+  //      ray namelist which is allocated via malloc(3).  If filter is NULL, all entries are selected.
 
+  /*   The scandir() function returns the number of directory entries selected.  On error, -1 is returned, with errno set  to  indicate  the
+       cause of the error. */
+  n = scandir(directory, &namelist, NULL, alphasort);
+  if (n == -1)
+  {
+    perror("ls:scandir\n");
+    return;
+  }
+
+  if (!aflag)
+  {
+    x = '.'; //for hidden files
+  }
+  int r = 0, total = 0;
+
+  //-------------------------to print total in longlisting------------------------------------  
+  if (lflag)
+  {
+    while (r < n)
+    {
+      if (namelist[r]->d_name[0] != x)
+      {
+        if (stat(namelist[r]->d_name, &stats) == 0)
+        {
+          total += stats.st_blocks;
+        }
+      }
+      r++;
+    }
+    printf("total %d\n", total/2); //for 1024 bytes of block (in st_blocks 1block = 512 )
+  }
+//--------------------------------------------------------------------------------------------
+  r = 0;
+  while (r < n)
+  {
+    if (namelist[r]->d_name[0] != x)
+    {
+      if (lflag) // long listing
+      {
+        if (stat(namelist[r]->d_name, &stats) == 0)
+        {
+          print_file_properties(stats);
+        }
+        else
+        {
+          printf("Unable to get file properties. ");
+        }
+      }
+      printf("%s\n", namelist[r]->d_name);
+    }
+    free(namelist[r]);
+    r++;
+  }
+  free(namelist);
+}
 void ls()
 {
-  DIR *d;
-  struct dirent *de;
-  struct stat stats;
   int aflag = 0, lflag = 0, err = 0, c;
-  char x = '\0';
   char *directory = ".";
-  struct dirent **namelist;
-
-  int n;
-
 
   // for(int i=0;i<arglength;i++){
   //   printf("%s ",arguments[i]);
@@ -113,53 +169,45 @@ void ls()
       break;
     }
   }
-  if(arglength-1-optind>0){
-    printf("too many argument");
+  if (err)
+  {
+    printf("invalid option\n");
     return;
   }
-  if(arglength>optind){
+  //ony one directory given
+  if (arglength - optind == 1)
+  {
     directory = arguments[optind];
   }
-  //printf("%s",directory);
+  //set to home directory
+  if (strcmp(directory, "~") == 0)
+  {
+    directory = shell_path;
+  }
+  //when only 0/1 directory given
+  if (arglength - optind < 2)
+  {
+
+    list_all_files(directory, aflag, lflag);
+  }
+  else
+  {
+    int dict = arglength - 1;
+    while (dict >= optind)
+    {
+      directory = arguments[dict];
+      if (strcmp(directory, "~") == 0)
+      {
+        directory = shell_path;
+      }
+      printf("%s:\n", directory);
+      list_all_files(directory, aflag, lflag);
+      dict--;
+    }
+  }
+
   optind = 0; //OPTIND is initialized to 1 each time the shell or a shell script is invoked.
               //The shell does not reset OPTIND automatically; it must be manually reset between multiple calls to getopts within the same shell invocation if a new set of parameters is to be used.
 
-  if (err)
-  {
-    printf("invalid option");
-    return;
-  }
-   n = scandir(directory, &namelist, NULL, alphasort);
-  if (n == -1)
-  {
-    perror("scandir");
-    return;
-  }
-
-  if (!aflag)
-  {
-    x = '.';
-  }
-  int r = 0;
-  while (r < n)
-  {
-    if (namelist[r]->d_name[0] != x)
-    {
-      if (lflag)
-      {
-        if (stat(namelist[r]->d_name, &stats) == 0)
-        {
-          print_file_properties(stats);
-        }
-        else
-        {
-          printf("Unable to get file properties.\n");
-        }
-      }
-      printf("%s\n", namelist[r]->d_name);
-    }
-    free(namelist[r]);
-    r++;
-  }
-  free(namelist);
+  //printf("%s",directory);
 }

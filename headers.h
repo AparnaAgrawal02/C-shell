@@ -15,6 +15,8 @@
 #include <unistd.h>
 #include <linux/limits.h>
 #include <time.h>
+#include <grp.h>
+
 extern char shell_path[PATH_MAX];
 char* arguments[256];
 extern int arglength;

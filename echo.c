@@ -10,9 +10,9 @@ void echo()
         return;
     }
 
-    strcpy(modified_string, arguments[0]);
+    strcpy(modified_string, arguments[1]);
     strcat(modified_string, " ");
-    for (int i = 1; i < arglength; i++)
+    for (int i = 2; i < arglength; i++)
     {
         if (arguments[i][0] == '\'')
         {

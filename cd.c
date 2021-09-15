@@ -14,18 +14,18 @@ int cd()
     }
     strcpy(pathcpy,path);
    
-    if (arglength > 1)
+    if (arglength > 2)
     {
         printf("Error:cd too many argument\n");
         return 1;
     }
     
     //no argument given then switch to home directory
-    if(arglength == 0){
+    if(arglength == 1){
         strcpy(arg,"~");
     }else{
         //change to current directory only
-    strcpy(arg,arguments[0]);
+    strcpy(arg,arguments[1]);
     }
     if(arg == "."){
         return 0;

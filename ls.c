@@ -88,16 +88,11 @@ void ls()
   struct stat stats;
   int aflag = 0, lflag = 0, err = 0, c;
   char x = '\0';
+  char *directory = ".";
   struct dirent **namelist;
 
   int n;
 
-  n = scandir(".", &namelist, NULL, alphasort);
-  if (n == -1)
-  {
-    perror("scandir");
-    return;
-  }
 
   // for(int i=0;i<arglength;i++){
   //   printf("%s ",arguments[i]);
@@ -118,12 +113,26 @@ void ls()
       break;
     }
   }
+  if(arglength-1-optind>0){
+    printf("too many argument");
+    return;
+  }
+  if(arglength>optind){
+    directory = arguments[optind];
+  }
+  //printf("%s",directory);
   optind = 0; //OPTIND is initialized to 1 each time the shell or a shell script is invoked.
               //The shell does not reset OPTIND automatically; it must be manually reset between multiple calls to getopts within the same shell invocation if a new set of parameters is to be used.
 
   if (err)
   {
     printf("invalid option");
+    return;
+  }
+   n = scandir(directory, &namelist, NULL, alphasort);
+  if (n == -1)
+  {
+    perror("scandir");
     return;
   }
 

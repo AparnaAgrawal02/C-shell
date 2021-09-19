@@ -6,6 +6,8 @@
 void print_file_properties(struct stat stats)
 {
   struct tm dt;
+  struct tm current;
+  time_t t;
   struct passwd *pws;
   struct group *grp;
   int i = 0;
@@ -73,12 +75,21 @@ void print_file_properties(struct stat stats)
 
   // File last modification time
   dt = *(localtime(&stats.st_mtime));
-  //month
-  printf("%s ", months[dt.tm_mon]);
-  //date
-  printf("%2d ", dt.tm_mday);
-  //time
-  printf("%2d:%2d ", dt.tm_hour, dt.tm_min);
+  time(&t);
+  current = *(localtime(&t));
+  if (abs(dt.tm_mon - current.tm_mon) >= 6 | dt.tm_year<current.tm_year)
+  {
+    printf("%s ", dt.tm_year);
+  }
+  else
+  {
+    //month
+    printf("%s ", months[dt.tm_mon]);
+    //date
+    printf("%2d ", dt.tm_mday);
+    //time
+    printf("%2d:%2d ", dt.tm_hour, dt.tm_min);
+  }
 }
 void list_all_files(char *directory, int aflag, int lflag)
 {
@@ -105,7 +116,7 @@ void list_all_files(char *directory, int aflag, int lflag)
   }
   int r = 0, total = 0;
 
-  //-------------------------to print total in longlisting------------------------------------  
+  //-------------------------to print total in longlisting------------------------------------
   if (lflag)
   {
     while (r < n)
@@ -119,9 +130,9 @@ void list_all_files(char *directory, int aflag, int lflag)
       }
       r++;
     }
-    printf("total %d\n", total/2); //for 1024 bytes of block (in st_blocks 1block = 512 )
+    printf("total %d\n", total / 2); //for 1024 bytes of block (in st_blocks 1block = 512 )
   }
-//--------------------------------------------------------------------------------------------
+  //--------------------------------------------------------------------------------------------
   r = 0;
   while (r < n)
   {

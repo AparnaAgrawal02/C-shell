@@ -1,99 +1,129 @@
 #include "headers.h"
 char shell_path[PATH_MAX];
-char* arguments[256];
-int arglength;
+char *allComands[256];
+char *arguments[256];
+int arglength, numberOfCommands;
 int main()
-{   //int PATH_MAX = 4096; //The longest path allow in Linux is 4095 characters.(256(NAME_MAX) x 16 = 4096).
+{ //int PATH_MAX = 4096; //The longest path allow in Linux is 4095 characters.(256(NAME_MAX) x 16 = 4096).
     size_t size = 0;
-    char **allComands = malloc(131072); //MAX_ARG_STRLEN
+    //char **allComands = malloc(131072); //MAX_ARG_STRLEN
     char *line, *s;
     char *delim = ";\n";
     char *blank = " \t";
-    int success = 0,flag;
+    int success = 0, flag;
     if (getcwd(shell_path, PATH_MAX) == 0)
     {
         perror("getcwd");
         return 1;
     }
+    check_baground_process();
+
     while (1)
-    {   flag =0;
+    {
+
+        flag = 0;
         success = prompt(shell_path);
         if (success == 1)
         {
             printf("Error in displaying Prompt");
         }
-        getline(&line, &size, stdin);
-        int i =0;
-// ---------------------------------------------------------       
+
+        if (getline(&line, &size, stdin) < 0)
+        {
+            if (errno == EINTR)
+            {
+                clearerr(stdin); // to continue after signal is handled using single handler
+                continue;
+            }
+            else
+            {
+                perror("getline");
+            }
+        }
+        numberOfCommands = 0;
+        // ---------------------------------------------------------
         char *token = strtok(line, delim);
         while (token != NULL)
-        {   allComands[i]= malloc(strlen(token)+1);
-            strcpy(allComands[i], token);
-            i++;
+        {
+            allComands[numberOfCommands] = malloc(strlen(token) + 1);
+            strcpy(allComands[numberOfCommands], token);
+            numberOfCommands++;
             token = strtok(NULL, delim);
         }
-//-------------------------------------------------------------       
-        s = allComands[0];
-        s[strlen(s)] = '\0'; 
+        //-------------------------------------------------------------
+        for (int num = 0; num < numberOfCommands; num++)
 
-//------------------------------------------------------   
-        arglength =0;    
-       token = strtok(s, blank);
-        while (token != NULL)
-        {   arguments[arglength]= malloc(strlen(token)+1);
-            strcpy(arguments[arglength], token);
-            arglength++;
-            token = strtok(NULL, blank);
-        }
-//------------------------------------------------------------
-        // printf("%s %d",raw,arglength);
-        // for(int i=0;i<arglength;i++){
-        //     printf("%s\n",arguments[i]);
-        // }
-    
-        if (strcmp(arguments[0], "echo") == 0)
         {
-            flag = 1;
-            printf("hi");
-            echo();
+            //printf("%d", num);
+            s = allComands[num];
+            s[strlen(s)] = '\0';
+
+            //------------------------------------------------------
+            arglength = 0;
+            token = strtok(s, blank);
+            while (token != NULL)
+            {
+                arguments[arglength] = malloc(strlen(token) + 1);
+                strcpy(arguments[arglength], token);
+                arglength++;
+                token = strtok(NULL, blank);
+            }
+            //------------------------------------------------------------
+            // printf("%s %d",raw,arglength);
+            // for(int i=0;i<arglength;i++){
+            //     printf("%s\n",arguments[i]);
+            // }
+
+            if (strcmp(arguments[0], "echo") == 0)
+            {
+                flag = 1;
+                echo();
+            }
+            else if (strcmp(arguments[0], "pwd") == 0)
+            {
+                flag = 1;
+                pwd();
+            }
+            else if (strcmp(arguments[0], "cd") == 0)
+            {
+                flag = 1;
+                cd();
+            }
+            else if (strcmp(arguments[0], "ls") == 0)
+            {
+                flag = 1;
+                ls();
+            }
+            else if (strcmp(arguments[0], "pinfo") == 0)
+            {
+                flag = 1;
+                pinfo();
+            }
+            else if (strcmp(arguments[0], "repeat") == 0)
+            {
+                flag = 1;
+                repeat();
+            }
+            else if (strcmp(arguments[0], "history") == 0)
+            {
+                log_history(arguments[0]);
+                read_history();
+            }
+
+            else if (arglength > 0)
+            {
+                execute_system_commands();
+            }
+            if (flag == 1)
+            {
+                log_history(arguments[0]);
+            }
+            while (arglength > 0)
+            {
+                free(arguments[arglength - 1]);
+                arguments[arglength - 1] = NULL;
+                arglength--;
+            }
         }
-        else if (strcmp(arguments[0], "pwd") == 0)
-        {
-            flag = 1;
-            pwd();
-        }
-        else if (strcmp(arguments[0], "cd") == 0)
-        {
-            flag = 1;
-            cd();
-        }
-        else if (strcmp(arguments[0], "ls") == 0)
-        {
-            flag = 1;
-            ls();
-        }
-        else if (strcmp(arguments[0], "pinfo") == 0)
-        {
-            flag = 1;
-            pinfo();
-        }
-        else if (strcmp(arguments[0], "history") == 0)
-        {
-            log_history(arguments[0]);
-            read_history();
-        }
-        else if(arglength>0){
-            execute_system_commands();
-        }
-        if (flag == 1)
-        {
-            log_history(arguments[0]);
-        }
-        while(arglength>0){
-            free(arguments[arglength-1]);
-            arguments[arglength-1] = NULL;
-            arglength--;
-        }
-    
     }
 }

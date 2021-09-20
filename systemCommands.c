@@ -6,6 +6,7 @@ void execute_system_commands()
     if (strcmp(arguments[arglength - 1], "&") == 0)
     {
         baground = 1;
+       // printf("x");
         free(arguments[arglength - 1]);
         arguments[arglength - 1] = NULL;
     }
@@ -33,10 +34,11 @@ void execute_system_commands()
         if (baground)
         {
             printf("%d\n", pid);
+            check_baground_process();
         }
         // Wait for child to finish if process is foreground
         if (!baground)
-        {
+        {   
             wait(&status);
         }
     }
@@ -70,7 +72,9 @@ static void handler(int signum, siginfo_t *info, void *ucontext)
     write(1,text,strlen(text));
     free(process_name);
     free(text);
+    wait(NULL); //After wait, child is definitely freed.
      return;
+
 }
 
 void check_baground_process()
@@ -78,21 +82,17 @@ void check_baground_process()
     struct sigaction sa;
 
     sa.sa_sigaction = handler;
-    if (sigemptyset(&sa.sa_mask) < 0)
-    {
-        perror("sigemptyset");
-        return;
-    };
-    sa.sa_flags =SA_SIGINFO;
-    sigfillset(&sa.sa_mask);
+
+    sa.sa_flags =SA_SIGINFO|SA_RESETHAND|SA_NODEFER;
+    //sigfillset(&sa.sa_mask);
+    sigprocmask(SIG_UNBLOCK,&sa.sa_mask,NULL); 
     
 
-    if (sigaction(SIGCHLD, &sa, NULL) == -1)
+    if (sigaction(SIGCHLD, &sa, NULL) == -1)        //At the termination of the child, a 'SIGCHLD' signal is generated which is delivered to the parent by the kernel
     {
         perror("check baground process");
         return;
     }
     
-
     /* Handle error */;
 }

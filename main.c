@@ -16,8 +16,7 @@ int main()
         perror("getcwd");
         return 1;
     }
-    check_baground_process();
-
+    
     while (1)
     {
 
@@ -40,6 +39,7 @@ int main()
                 perror("getline");
             }
         }
+        log_history(line);
         numberOfCommands = 0;
         // ---------------------------------------------------------
         char *token = strtok(line, delim);
@@ -76,48 +76,50 @@ int main()
 
             if (strcmp(arguments[0], "echo") == 0)
             {
-                flag = 1;
+               
                 echo();
             }
             else if (strcmp(arguments[0], "pwd") == 0)
             {
-                flag = 1;
+                
                 pwd();
             }
             else if (strcmp(arguments[0], "cd") == 0)
             {
-                flag = 1;
+               
                 cd();
             }
             else if (strcmp(arguments[0], "ls") == 0)
             {
-                flag = 1;
+                
                 ls();
             }
             else if (strcmp(arguments[0], "pinfo") == 0)
             {
-                flag = 1;
+                
                 pinfo();
             }
             else if (strcmp(arguments[0], "repeat") == 0)
             {
-                flag = 1;
+                
                 repeat();
+            }
+    
+             else if (strcmp(arguments[0], "exit") == 0)
+            {   flag =1;
+                break;
             }
             else if (strcmp(arguments[0], "history") == 0)
             {
-                log_history(arguments[0]);
+                
                 read_history();
             }
 
             else if (arglength > 0)
-            {
+            {  
                 execute_system_commands();
             }
-            if (flag == 1)
-            {
-                log_history(arguments[0]);
-            }
+        
             while (arglength > 0)
             {
                 free(arguments[arglength - 1]);
@@ -125,5 +127,9 @@ int main()
                 arglength--;
             }
         }
+        if(flag==1){
+            break;
+        }
+
     }
 }

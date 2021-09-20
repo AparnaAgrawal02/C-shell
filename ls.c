@@ -77,16 +77,16 @@ void print_file_properties(struct stat stats)
   dt = *(localtime(&stats.st_mtime));
   time(&t);
   current = *(localtime(&t));
-  if (abs(dt.tm_mon - current.tm_mon) >= 6 | dt.tm_year<current.tm_year)
-  {
-    printf("%s ", dt.tm_year);
-  }
-  else
-  {
-    //month
+  //month
     printf("%s ", months[dt.tm_mon]);
     //date
     printf("%2d ", dt.tm_mday);
+  if (abs(dt.tm_mon - current.tm_mon) >= 6 | dt.tm_year<current.tm_year)
+  {
+    printf("%4d ", dt.tm_year);
+  }
+  else
+  {
     //time
     printf("%2d:%2d ", dt.tm_hour, dt.tm_min);
   }

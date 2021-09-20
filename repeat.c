@@ -1,12 +1,16 @@
 #include "headers.h"
-int  repeat()
+void repeat()
 {
     if (arglength < 3)
     {
         fprintf(stderr, "repeat:less argumnets\n");
-        return -1;
+        return ;
     }
     int x = atoi(arguments[1]);
+    if (x==0){
+        printf("\n");
+    }
+    //printf("%d",x);
     char *command = malloc(4096);
     strcpy(command, arguments[2]);
     for (int j = 3; j < arglength; j++)
@@ -14,7 +18,6 @@ int  repeat()
         strcat(command, " ");
         strcat(command, arguments[j]);
     }
-    printf("%d", numberOfCommands);
     while (x)
     {
         allComands[numberOfCommands] = malloc(strlen(command) + 1);
@@ -23,5 +26,5 @@ int  repeat()
         x--;
     }
     free(command);
-    return numberOfCommands;
+
 }

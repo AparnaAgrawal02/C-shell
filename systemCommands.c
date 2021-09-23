@@ -1,18 +1,39 @@
 #include "headers.h"
+pid_t fgpid = 0;
+
+//signal is handeld by check_child_process
+void waitForForegroundProcess(pid_t pid)
+{
+    fgpid = pid;
+    sigset_t empty;
+    sigemptyset(&empty);
+    while (fgpid == pid)
+    {
+        sigsuspend(&empty);
+        /* sigsuspend does (in one atomic operation)
+     * 1) update blocked set to this mask
+     * 2) go to sleep until signal
+     * 3) when woken up, restore original mask
+     */
+    }
+}
 void execute_system_commands()
 {
     int baground = 0;
-    //printf("%s",arguments[arglength-1]);
+    //checks if process is baground
     if (strcmp(arguments[arglength - 1], "&") == 0)
     {
         baground = 1;
-       // printf("x");
         free(arguments[arglength - 1]);
         arguments[arglength - 1] = NULL;
     }
 
     pid_t pid;
     int status;
+    /* fork()  creates  a new process by duplicating the calling process.  The
+    new process is referred to as the child process.  The  calling  process
+       is referred to as the parent process. */
+
     pid = fork();
     if (pid < 0)
     {
@@ -34,65 +55,80 @@ void execute_system_commands()
         if (baground)
         {
             printf("%d\n", pid);
-            check_baground_process();
         }
         // Wait for child to finish if process is foreground
         if (!baground)
-        {   
-            wait(&status);
+
+        {
+            waitForForegroundProcess(pid);
+
+            //wait(&status);
         }
     }
 }
 static void handler(int signum, siginfo_t *info, void *ucontext)
- {   
-
-     char *process_name=malloc(1024), *exit_status = "normally",*file = malloc(256);
-    char* text = malloc(2048);
+{
+    char process_name[1024], *exit_status = "normally", file[256];
+    char text[2048];
     pid_t process_pid;
     int fd;
-
-     process_pid = info->si_pid;
-     if (info->si_status)
+    //get pid of process
+    process_pid = info->si_pid;
+    //check if it is of foreground
+    if (process_pid == fgpid)
+    {
+        fgpid = 0;
+        wait(NULL);
+        return;
+    }
+    //check exit status
+    if (info->si_status)
     {
         exit_status = "abnormally";
     }
-    //printf("%d",process_pid);
-    sprintf(file, "/proc/%d/comm",process_pid);
+    //get name of process from file----------------------------------------
+    sprintf(file, "/proc/%d/comm", process_pid);
 
     fd = open(file, O_RDONLY);
     if (fd == -1)
     {
         perror("handler");
-        return;
     }
-    read(fd,process_name,1024);
-    process_name[strlen(process_name)-1] = '\0';
-    close(fd);
-    sprintf(text,"%s with pid %d exited %s\n", process_name, process_pid, exit_status);
-    write(1,text,strlen(text));
-    free(process_name);
-    free(text);
+    else
+    {
+        read(fd, process_name, 1024);
+        process_name[strlen(process_name) - 1] = '\0';
+        close(fd);
+    }
+    //-------------------------------------------------------------------------
+    sprintf(text, "%s with pid %d exited %s\n", process_name, process_pid, exit_status);
     wait(NULL); //After wait, child is definitely freed.
-     return;
+    write(1, text, strlen(text));
 
+    return;
 }
 
-void check_baground_process()
+void check_child_process()
 {
     struct sigaction sa;
 
     sa.sa_sigaction = handler;
 
-    sa.sa_flags =SA_SIGINFO|SA_RESETHAND|SA_NODEFER;
-    //sigfillset(&sa.sa_mask);
-    sigprocmask(SIG_UNBLOCK,&sa.sa_mask,NULL); 
-    
+    sa.sa_flags = SA_SIGINFO; /*   When the SA_SIGINFO flag is specified in act.sa_flags, the signal  han‐
+       dler  address  is  passed via the act.sa_sigaction field.  This handler
+       takes three arguments */
+    sigfillset(&sa.sa_mask);
+    /* sa_mask  specifies  a  mask  of  signals which should be blocked (i.e.,
+       added to the signal mask of the thread in which the signal  handler  is
+       invoked) during execution of the signal handler.  In addition, the sig‐
+       nal which triggered the handler will be blocked, unless the  SA_NODEFER
+       flag is used. */
 
-    if (sigaction(SIGCHLD, &sa, NULL) == -1)        //At the termination of the child, a 'SIGCHLD' signal is generated which is delivered to the parent by the kernel
+    if (sigaction(SIGCHLD, &sa, NULL) == -1) //At the termination of the child, a 'SIGCHLD' signal is generated which is delivered to the parent by the kernel
     {
         perror("check baground process");
         return;
     }
-    
+    //sigprocmask(SIG_UNBLOCK, &sa.sa_mask, NULL);
     /* Handle error */;
 }

@@ -1,8 +1,4 @@
 #include "headers.h"
-//lists all directory except startng with .
-//The  getopt()  function parses the command-line arguments
-//If getopt() is called repeatedly, it re‐turns successively each of the option characters from each of the option elements.
-
 void print_file_properties(struct stat stats)
 {
   struct tm dt;
@@ -18,43 +14,43 @@ void print_file_properties(struct stat stats)
     permision[i] = '-';
   }
   permision[i] = '\0';
-  if (S_IFDIR & stats.st_mode)
+  if (S_IFDIR & stats.st_mode) //if file is directory
   {
     permision[0] = 'd';
   }
-  if (stats.st_mode & S_IRUSR)
+  if (stats.st_mode & S_IRUSR) //if user has reading permission
   {
     permision[1] = 'r';
   }
-  if (stats.st_mode & S_IWUSR)
+  if (stats.st_mode & S_IWUSR) //if user has writing permission
   {
     permision[2] = 'w';
   }
-  if (stats.st_mode & S_IXUSR)
+  if (stats.st_mode & S_IXUSR) //if user has executing permission
   {
     permision[3] = 'x';
   }
-  if (stats.st_mode & S_IRGRP)
+  if (stats.st_mode & S_IRGRP) //if group has reading permission
   {
     permision[4] = 'r';
   }
-  if (stats.st_mode & S_IWGRP)
+  if (stats.st_mode & S_IWGRP) //if group has writing permission
   {
     permision[5] = 'w';
   }
-  if (stats.st_mode & S_IXGRP)
+  if (stats.st_mode & S_IXGRP) //if group has executing permission
   {
     permision[6] = 'x';
   }
-  if (stats.st_mode & S_IROTH)
+  if (stats.st_mode & S_IROTH) //if others has reading permission
   {
     permision[7] = 'r';
   }
-  if (stats.st_mode & S_IWOTH)
+  if (stats.st_mode & S_IWOTH) //if others has writing permission
   {
     permision[8] = 'w';
   }
-  if (stats.st_mode & S_IXOTH)
+  if (stats.st_mode & S_IXOTH) //if others has executing permission
   {
     permision[9] = 'x';
   }
@@ -78,12 +74,12 @@ void print_file_properties(struct stat stats)
   time(&t);
   current = *(localtime(&t));
   //month
-    printf("%s ", months[dt.tm_mon]);
-    //date
-    printf("%2d ", dt.tm_mday);
-  if (abs(dt.tm_mon - current.tm_mon) >= 6 | dt.tm_year<current.tm_year)
+  printf("%s ", months[dt.tm_mon]);
+  //date
+  printf("%2d ", dt.tm_mday);
+  if (abs(dt.tm_mon - current.tm_mon) >= 6 | dt.tm_year < current.tm_year)
   {
-    printf("%4d ", dt.tm_year);
+    printf("%4d ", (dt.tm_year + 1900)); //tm_year = year -1900
   }
   else
   {
@@ -161,10 +157,8 @@ void ls()
   int aflag = 0, lflag = 0, err = 0, c;
   char *directory = ".";
 
-  // for(int i=0;i<arglength;i++){
-  //   printf("%s ",arguments[i]);
-  // }
-  // printf("%d",arglength);
+  //The  getopt()  function parses the command-line arguments
+  //If getopt() is called repeatedly, it re‐turns successively each of the option characters from each of the option elements.
   while ((c = getopt(arglength, arguments, "al")) != -1)
   {
     switch (c)

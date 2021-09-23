@@ -4,20 +4,23 @@ void echo()
     //printf("%s\n", string_to_print);
     char *modified_string;
     modified_string = malloc(arglength * 255);
-    if (arglength == 0)
+    //if no arguments are given
+    if (arglength == 1)
     {
         printf("\n");
+        free(modified_string);
         return;
     }
-
+    //copy the argument in modified string
     strcpy(modified_string, arguments[1]);
     strcat(modified_string, " ");
+    //concating the arguments in modified string
     for (int i = 2; i < arglength; i++)
     {
-        
-        strcat(modified_string,arguments[i]);
+        strcat(modified_string, arguments[i]);
         strcat(modified_string, " ");
     }
+    //display
     printf("%s\n", modified_string);
     free(modified_string);
 }

@@ -1,15 +1,20 @@
-ls
-ls trial
-echo hello hello
-repeat 2 echo hello
+firefox &
 gedit &
-gedit 
-sleep 4
-history
-ls
-echo hi
+firefox &
+firefox &
 gedit &
-history
-echo hello
-echo hello
-exit
+gedit &
+sleep
+sleep 2
+gedit &
+sleep 2
+
+gedit &
+gedit &
+gedit &
+gedit &
+sleep 2
+gedit &
+gedit &
+sleep 2
+gedit &

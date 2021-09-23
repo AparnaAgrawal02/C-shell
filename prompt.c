@@ -1,10 +1,9 @@
 #include "headers.h"
-
+//  this function display promt of my terminal,changes if directory is changed
 int prompt()
 {
-
     struct utsname buffer;
-    char *current_path = malloc(PATH_MAX);
+    char current_path[PATH_MAX];
     char relative_path[PATH_MAX];
     struct passwd *pws;
     //fetch currrent process path
@@ -31,7 +30,7 @@ int prompt()
     }
     relative_path[0] = '~';
     relative_path[1] = '\0';
-    int r = 0;
+
     //if path is not same change relativePath
     if (strcmp(shell_path, current_path) != 0)
     {
@@ -42,11 +41,10 @@ int prompt()
         else
         {
             strcpy(relative_path, shell_path);
-            relative_path[strlen(current_path)]='\0';
+            relative_path[strlen(current_path)] = '\0';
         }
     }
     //print
     printf("%s@%s:%s>", buffer.nodename, pws->pw_name, relative_path);
-    free(current_path);
     return 0;
 }

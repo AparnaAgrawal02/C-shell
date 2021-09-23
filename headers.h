@@ -23,6 +23,7 @@
 #include <grp.h>
 #include <signal.h>
 #include <errno.h>
+#include <wait.h>
 
 extern char shell_path[PATH_MAX];
 char *allComands[256];

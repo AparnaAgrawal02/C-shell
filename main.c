@@ -7,7 +7,7 @@ int main()
 { //int PATH_MAX = 4096; //The longest path allow in Linux is 4095 characters.(256(NAME_MAX) x 16 = 4096).
     size_t size = 0;
     //char **allComands = malloc(131072); //MAX_ARG_STRLEN
-    char *line, *s;
+    char *line = NULL, *s;
     char *delim = ";\n";
     char *blank = " \t";
     int success = 0, flag;
@@ -76,51 +76,50 @@ int main()
 
             if (strcmp(arguments[0], "echo") == 0)
             {
-
+               
                 echo();
             }
             else if (strcmp(arguments[0], "pwd") == 0)
             {
-
+                
                 pwd();
             }
             else if (strcmp(arguments[0], "cd") == 0)
             {
-
+               
                 cd();
             }
             else if (strcmp(arguments[0], "ls") == 0)
             {
-
+                
                 ls();
             }
             else if (strcmp(arguments[0], "pinfo") == 0)
             {
-
+                
                 pinfo();
             }
             else if (strcmp(arguments[0], "repeat") == 0)
             {
-
+                
                 repeat();
             }
-
-            else if (strcmp(arguments[0], "exit") == 0)
-            {
-                flag = 1;
+    
+             else if (strcmp(arguments[0], "exit") == 0)
+            {   flag =1;
                 break;
             }
             else if (strcmp(arguments[0], "history") == 0)
             {
-
+                
                 read_history();
             }
 
             else if (arglength > 0)
-            {
+            {  
                 execute_system_commands();
             }
-
+        
             while (arglength > 0)
             {
                 free(arguments[arglength - 1]);
@@ -128,9 +127,9 @@ int main()
                 arglength--;
             }
         }
-        if (flag == 1)
-        {
+        if(flag==1){
             break;
         }
+
     }
 }

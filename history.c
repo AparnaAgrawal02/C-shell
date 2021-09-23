@@ -89,11 +89,6 @@ void log_history(char *command)
         fprintf(historyFile, "%s", command);
         //close file
         fclose(historyFile);
-        //free memmory
-        for (int i = 1; i < 20; i++)
-        {
-            free(arr[i]);
-        }
     }
     return;
 }

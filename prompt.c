@@ -28,15 +28,14 @@ int prompt()
         perror("getpwuid");
         return 1;
     }
-    relative_path[0] = '~';
-    relative_path[1] = '\0';
+    strcpy(relative_path,"~");
 
     //if path is not same change relativePath
     if (strcmp(shell_path, current_path) != 0)
     {
         if (strlen(shell_path) < strlen(current_path))
         {
-            strcpy(relative_path, &current_path[strlen(shell_path)]);
+            strcat(relative_path, &current_path[strlen(shell_path)]);
         }
         else
         {

@@ -99,10 +99,19 @@ void list_all_files(char *directory, int aflag, int lflag)
 
   /*   The scandir() function returns the number of directory entries selected.  On error, -1 is returned, with errno set  to  indicate  the
        cause of the error. */
+
   n = scandir(directory, &namelist, NULL, alphasort);
   if (n == -1)
   {
-    perror("ls:scandir\n");
+    if (stat(directory, &stats) == 0)
+    {
+      print_file_properties(stats);
+      printf("\n");
+    }
+    else
+    {
+      perror("ls:scandir\n");
+    }
     return;
   }
 

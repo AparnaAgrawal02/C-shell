@@ -1,20 +1,12 @@
-firefox &
-gedit &
-firefox &
-firefox &
-gedit &
-gedit &
-sleep
-sleep 2
-gedit &
-sleep 2
-
-gedit &
-gedit &
-gedit &
-gedit &
-sleep 2
-gedit &
-gedit &
-sleep 2
-gedit &
+ls
+ls
+ls
+cd ..
+cd ./.
+ls
+cd ..
+ls
+cd ..
+cd ~
+cd group
+history

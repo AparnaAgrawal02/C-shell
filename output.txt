@@ -1,4 +1,0 @@
-pid -- 55121
-Process Status -- R
-memory -- 92102656
-Executable Path -- ~/a.out

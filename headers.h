@@ -25,7 +25,7 @@
 #include <signal.h>
 #include <errno.h>
 #include <wait.h>
-
+#include "execute.h"
 extern char shell_path[PATH_MAX];
 char *allComands[256];
 char *arguments[256];

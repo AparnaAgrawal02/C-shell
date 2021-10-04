@@ -18,7 +18,7 @@ void waitForForegroundProcess(pid_t pid)
     }
 }
 void execute_system_commands()
-{   char *err;
+{   char *err = malloc(256);
     int baground = 0;
     //checks if process is baground
     if (strcmp(arguments[arglength - 1], "&") == 0)

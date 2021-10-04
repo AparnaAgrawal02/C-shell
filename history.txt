@@ -1,20 +1,20 @@
-cat result.txt | grep ls 
-cat result.txt | grep ls | tee file.txt
-cat result.txt | grep ls 
-cat result.txt | grep ls | tee file.txt
-cat result.txt | grep ls | tee file.txt
-cat result.txt | grep ls | tee file.txt
-cat result.txt | grep ls | tee file.txt
-cat result.txt | grep ls | tee file.txt
-cat result.txt | grep ls | tee file.txt
-cat result.txt | grep ls | tee file.txt | wc -l
-cat result.txt | grep ls | tee file.txt | wc -l
-cat file.txt | wc
-cat sample2.txt | head -7 | tail -5
-ls | grep *.txt > out.txt
 cat < in.txt | wc -l > lines.txt
+pinfo
+repeat 2    echo hello
+repeat           2 ls
+pwd
+exit
+cat hell.c
+cat hell.c | wc
+cat hell.c | wc  |wc
 cat < in.txt | wc -l > lines.txt
-ls | grep *.txt 
- pinfo | wc
-pinfo > output.txt
-cat output.txt result.txt
+cat <x.txt | wc -l > lines.txt
+exit
+repeat 5 ls -al
+echo hello
+pwd
+sleep 4
+gedit &
+gedit
+vi &
+vi

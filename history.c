@@ -11,7 +11,7 @@ char **read_file(char FileName[255], int *count)
     { //open file to read
         historyFile = fopen(FileName, "r");
         //Error handle
-        if (historyFile < 0)
+        if (!historyFile)
         {
             perror("Open File to read");
             free(buffer);
@@ -56,7 +56,7 @@ void log_history(char *command)
     {
         //file opened to write it will truncate the original file and then rewrite
         historyFile = fopen(FileName, "w");
-        if (historyFile < 0)
+        if (!historyFile)
         {
             perror("Open File to Write");
             for (int i = 1; i < 20; i++)
@@ -80,7 +80,7 @@ void log_history(char *command)
     else
     { //open file to append it creates if file not prsent
         historyFile = fopen(FileName, "a");
-        if (historyFile < 0)
+        if (!historyFile)
         {
             perror("Open File to Write");
             return;

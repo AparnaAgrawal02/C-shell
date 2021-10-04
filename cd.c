@@ -33,7 +33,7 @@ int cd()
         //change to current directory only
         strcpy(arg, arguments[1]);
     }
-    if (arg == ".")
+    if (strcmp(arg,".")==0)
     {   
         free(path);
         return 0;

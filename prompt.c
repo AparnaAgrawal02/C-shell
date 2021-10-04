@@ -45,5 +45,7 @@ int prompt()
     }
     //print
     printf("%s@%s:%s>", buffer.nodename, pws->pw_name, relative_path);
+    memset(relative_path, 0, sizeof relative_path);
+     memset(current_path, 0, sizeof current_path);
     return 0;
 }

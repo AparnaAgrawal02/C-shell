@@ -10,6 +10,7 @@
 #include "pinfo.h"
 #include "systemCommands.h"
 #include "repeat.h"
+#include "signals.h"
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <sys/stat.h>
@@ -29,4 +30,5 @@ extern char shell_path[PATH_MAX];
 char *allComands[256];
 char *arguments[256];
 extern int arglength;
+extern pid_t fgpid;
 extern int numberOfCommands;

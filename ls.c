@@ -8,7 +8,7 @@ void print_file_properties(struct stat stats)
   struct group *grp;
   int i = 0;
   char permision[11];
-  char *months[] = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Nov", "Dec"};
+  char *months[] = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep","Oct", "Nov", "Dec"};
   for (i = 0; i < 10; i++)
   {
     permision[i] = '-';
@@ -77,7 +77,7 @@ void print_file_properties(struct stat stats)
   printf("%s ", months[dt.tm_mon]);
   //date
   printf("%2d ", dt.tm_mday);
-  if (abs(dt.tm_mon - current.tm_mon) >= 6 | dt.tm_year < current.tm_year)
+  if (abs(dt.tm_mon - current.tm_mon) >= 6 || dt.tm_year < current.tm_year)
   {
     printf("%4d ", (dt.tm_year + 1900)); //tm_year = year -1900
   }

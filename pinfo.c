@@ -3,8 +3,8 @@ void pinfo()
 {
     FILE *fd;
     pid_t pid; //pid_t == int
-    int i = 0, num = 3;
-    char status, line[4096], file[256], statfile[256], exefile[256], *values[23], *ptr;
+    int i = 0;
+    char  line[4096], file[256], statfile[256], exefile[256], *values[23], *ptr;
     char relative_path[PATH_MAX];
     if (arglength > 2)
     {

@@ -1,12 +1,20 @@
-ls
-ls
-ls
-cd ..
-cd ./.
-ls
-cd ..
-ls
-cd ..
-cd ~
-cd group
-history
+cat result.txt | grep ls 
+cat result.txt | grep ls | tee file.txt
+cat result.txt | grep ls 
+cat result.txt | grep ls | tee file.txt
+cat result.txt | grep ls | tee file.txt
+cat result.txt | grep ls | tee file.txt
+cat result.txt | grep ls | tee file.txt
+cat result.txt | grep ls | tee file.txt
+cat result.txt | grep ls | tee file.txt
+cat result.txt | grep ls | tee file.txt | wc -l
+cat result.txt | grep ls | tee file.txt | wc -l
+cat file.txt | wc
+cat sample2.txt | head -7 | tail -5
+ls | grep *.txt > out.txt
+cat < in.txt | wc -l > lines.txt
+cat < in.txt | wc -l > lines.txt
+ls | grep *.txt 
+ pinfo | wc
+pinfo > output.txt
+cat output.txt result.txt

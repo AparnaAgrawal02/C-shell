@@ -168,6 +168,7 @@ void ls()
 
   //The  getopt()  function parses the command-line arguments
   //If getopt() is called repeatedly, it re‐turns successively each of the option characters from each of the option elements.
+  
   while ((c = getopt(arglength, arguments, "al")) != -1)
   {
     switch (c)

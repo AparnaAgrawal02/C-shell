@@ -52,6 +52,14 @@ void log_history(char *command)
     strcat(FileName, "/history.txt");
     FILE *historyFile;
     arr = read_file(FileName, &count);
+    //printf("[%s]",arr[count-1]);
+    char *x = malloc(100);
+    strcpy(x,arr[count-1]);
+    strcat(x,"\n");
+    if(strcmp(x,command)==0){
+        return;
+    }
+    
     if (count >= 20)
     {
         //file opened to write it will truncate the original file and then rewrite
@@ -108,13 +116,15 @@ void read_history()
     {
         i = 0;
     }
-    while (*arr)
+    int count1 = count ;
+    while (count1)
     {   //skip
         if (i > 0)
         {
             free(*arr);
             arr++;
             i--;
+            count1 --;
         }
         //print
         else
@@ -122,6 +132,7 @@ void read_history()
             printf("%s\n", *arr);
             free(*arr);
             arr++;
+            count1 --;
         }
     }
 

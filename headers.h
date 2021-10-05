@@ -26,9 +26,19 @@
 #include <errno.h>
 #include <wait.h>
 #include "execute.h"
+#include "jobs.h"
 extern char shell_path[PATH_MAX];
 char *allComands[256];
 char *arguments[256];
 extern int arglength;
 extern pid_t fgpid;
 extern int numberOfCommands;
+typedef struct _job {
+ int job_number;
+ int process_ID;
+ char *status;
+ char *name;
+ struct _job *next;
+}job;
+extern job *job_head;
+extern int baground_job_count;

@@ -79,7 +79,18 @@ int executeCommand(char *command)
         {
             repeat();
         }
-
+        else if (strcmp(arguments[0], "jobs") == 0){
+            print_jobs();
+        }
+        else if (strcmp(arguments[0], "sig") == 0){
+            sig();
+        }
+        else if (strcmp(arguments[0], "bg") == 0){
+            bg();
+        }
+        else if (strcmp(arguments[0], "fg") == 0){
+            fg();
+        }
         else if (strcmp(arguments[0], "exit") == 0)
         {
             return 1;
@@ -101,6 +112,7 @@ int executeCommand(char *command)
             arguments[arglength - 1] = NULL;
             arglength--;
         }
+
     }
     //original
     dup2(save_stdin, 0);
@@ -186,7 +198,7 @@ void switch_input_output(int *open_case, char *file)
     }
     if (fd1 < 0)
     {
-        perror("Couldn't open input file");
+        printf("Couldn't open input file");
         *open_case = 0;
     }
     else

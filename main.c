@@ -3,6 +3,7 @@ char shell_path[PATH_MAX];
 char *allComands[256];
 char *arguments[256];
 int arglength, numberOfCommands;
+pid_t shell_pgid;
 
 void semicolon_split(char *line);
 
@@ -20,7 +21,7 @@ int main()
         return 1;
     }
     /*------------------- Put ourselves in our own process group.--------------------  */
-    pid_t shell_pgid = getpid();
+    shell_pgid = getpid();
     if (setpgid(shell_pgid, shell_pgid) < 0)
     {
         perror("Couldn't put the shell in its own process group");
@@ -29,6 +30,7 @@ int main()
 
     //----------------------signal calls-------------------------------------------------------
     ctrlc_signal();
+    ctrlz_signal();
     check_child_process(); //signal handling for when child process exits
     //-----------------------------------------------------------------------------------------
     while (1)

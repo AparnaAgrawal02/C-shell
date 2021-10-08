@@ -3,6 +3,12 @@
 #include <string.h>
 #include <stdlib.h>
 #include "pwd.h"
+#include "fg.h"
+#include "bg.h"
+#include "sig.h"
+#include "execute.h"
+#include "jobs.h"
+#include "replay.h"
 #include "prompt.h"
 #include "echo.h"
 #include "cd.h"
@@ -25,8 +31,7 @@
 #include <signal.h>
 #include <errno.h>
 #include <wait.h>
-#include "execute.h"
-#include "jobs.h"
+pid_t shell_pgid;
 extern char shell_path[PATH_MAX];
 char *allComands[256];
 char *arguments[256];

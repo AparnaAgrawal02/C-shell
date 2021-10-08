@@ -91,6 +91,9 @@ int executeCommand(char *command)
         else if (strcmp(arguments[0], "fg") == 0){
             fg();
         }
+        else if (strcmp(arguments[0], "replay") == 0){
+            replay();
+        }
         else if (strcmp(arguments[0], "exit") == 0)
         {
             return 1;
@@ -114,6 +117,12 @@ int executeCommand(char *command)
         }
 
     }
+    while (arglength > 0)
+        {
+            free(arguments[arglength - 1]);
+            arguments[arglength - 1] = NULL;
+            arglength--;
+        }
     //original
     dup2(save_stdin, 0);
     dup2(save_stdout, 1);

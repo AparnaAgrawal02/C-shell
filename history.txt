@@ -1,20 +1,20 @@
-bg 2
-sleep 450 
-sleep 400 &
-fg 1
-sleep 450 &
-sig 1 19
+sleep 50 
+sleep 50 &
 jobs
+sig 2 9
+jobs
+
+bg 1 
+jobs
+sleep 50
 bg 1
+bg 3
 jobs
-sleep 400 &
-sig 1 19
+sig 3 9
+sleep 50 &
+fg 4
 jobs
-bg 1
-jobs
-sleep 450 &
-fg 1
-sleep 10 &
-fg 1
-sleep 500 &
-fg 1
+bg 5
+fg 5
+cat ls.c | wc
+replay -command echo "hi" -interval 3 -period 6

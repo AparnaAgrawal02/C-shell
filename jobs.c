@@ -54,12 +54,35 @@ void add_job(pid_t pid)
     new->process_ID = pid;
 
     //get name of process from file----------------------------------------
-    strcpy(process_name, arguments[0]);
-    for (int r = 1; r < arglength - 1; r++)
+    char buf[500];
+    if (strcmp(arguments[0], "fg") == 0)
     {
-        strcat(process_name, " ");
+        sprintf(file, "/proc/%d/status", pid);
 
-        strcat(process_name, arguments[r]);
+        FILE *fp = fopen(file, "r"); //Open the file
+        if (NULL != fp)
+        {
+            if (fgets(buf, 500, fp) == NULL)
+            {
+                fclose(fp);
+            }
+            sscanf(buf, "%*s %s", process_name);
+        }
+    }
+    else
+    {
+        int args = arglength;
+        strcpy(process_name, arguments[0]);
+        if (arguments[arglength - 1] == NULL)
+        {
+            args -= 1;
+        }
+        for (int r = 1; r < args; r++)
+        {
+            strcat(process_name, " ");
+
+            strcat(process_name, arguments[r]);
+        }
     }
     new->name = process_name;
 
@@ -162,6 +185,7 @@ void print_jobs()
         while (p1 != NULL)
         {
             update_status(p1);
+
             if (strcmp(p1->status, "Running") == 0 && sflag != 1)
             {
                 printf("[%d] %s %s [%d]\n", p1->job_number, p1->status, p1->name, p1->process_ID);
@@ -249,85 +273,5 @@ int get_process_id(int job_no)
             p = p->next;
         }
         return -1;
-    }
-}
-void sig()
-{
-    if (arglength != 3)
-    {
-        fprintf(stderr, "invalid number of argument \n");
-        return;
-    }
-    int signal_number;
-    int job_number;
-    int id;
-    job_number = atoi(arguments[1]);
-    signal_number = atoi(arguments[2]);
-    id = get_process_id(job_number);
-    if (id == -1)
-    {   
-        fprintf(stderr, "job number doesn't exist");
-        return;
-    }
-    kill(id, signal_number);
-}
-
-void fg(){
-    if (arglength != 2)
-    {
-        fprintf(stderr, "invalid number of argument \n");
-        return;
-    }
-    int job_number;
-    int id;
-    job_number = atoi(arguments[1]);
-    id = get_process_id(job_number);
-    if (id == -1)
-    {   
-        fprintf(stderr, "job number doesn't exist");
-        return;
-    }
-    delete_jobs(id);//only bground processes
-    // protect shell against signals for illegal use of stdin and stdout
-    fgpid = id;
-    signal(SIGTTIN, SIG_IGN);
-    signal(SIGTTOU, SIG_IGN);
-    pid_t shell_pid = getpid();
-    //giving control to bg process
-    tcsetpgrp(STDIN_FILENO, getpgid(id));
-    //wait for child
-    waitpid(getpgid(id), NULL, WUNTRACED);
-    //giving controll back to shell
-    tcsetpgrp(STDIN_FILENO, getpgid(shell_pid));
-    // safe to end protection from signals
-    signal(SIGTTIN, SIG_DFL);
-    signal(SIGTTOU, SIG_DFL);
-    
-    /*    The  function tcsetpgrp() makes the process group with process group ID
-       pgrp the foreground process group on the  terminal  associated  to  fd,
-       which  must  be  the  controlling  terminal of the calling process, and
-       still be associated  with  its  session.   Moreover,  pgrp  must  be  a
-       (nonempty)  process  group belonging to the same session as the calling
-       process. */
-
-}
-void bg(){
-    if (arglength != 2)
-    {
-        fprintf(stderr, "invalid number of argument \n");
-        return;
-    }
-    int job_number;
-    int id;
-    job_number = atoi(arguments[1]);
-    id = get_process_id(job_number);
-    if (id == -1)
-    {   
-        fprintf(stderr, "job number doesn't exist");
-        return;
-    }
-     if (kill(id, SIGCONT) < 0) {
-        perror("Could not run background process");
-        return ;
     }
 }

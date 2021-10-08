@@ -5,6 +5,7 @@ pid_t fgpid = -1;
 void waitForForegroundProcess(pid_t pid)
 {
     fgpid = pid;
+    //printf("%d",fgpid);
     sigset_t empty;
     sigemptyset(&empty);
     while (fgpid == pid)
@@ -19,7 +20,6 @@ void waitForForegroundProcess(pid_t pid)
 }
 void execute_system_commands()
 {
-    char *err = malloc(256);
     int baground = 0;
     //checks if process is baground
     if (strcmp(arguments[arglength - 1], "&") == 0)
@@ -46,27 +46,23 @@ void execute_system_commands()
         /*   Loads the executable file path, or a file found through a search path, into the memory associated with the calling
         process, and starts executing the program therein. If successful, it obliterates whatever
     program is currently running in the calling process. */
-        if (baground)
-        {
-            setpgid(0, 0); //terminal signals will not affect child process
-        }
-
+        setpgid(0, 0); //terminal signals will not affect child proces
         if (execvp(arguments[0], arguments) == -1)
         {
-            sprintf(err, "System command:execvp:%s", arguments[0]);
-            perror(err);
-            return;
+            fprintf(stderr, "System command:execvp:command not found %s\n", arguments[0]);
+
+            exit(0);
         }
     }
     else
     {
         // Parent process
+        // Wait for child to finish if process is foreground
         if (baground)
         {
             printf("%d\n", pid);
             add_job(pid);
         }
-        // Wait for child to finish if process is foreground
         if (!baground)
 
         {
@@ -77,22 +73,44 @@ void execute_system_commands()
         }
     }
 }
-static void handler(int signum, siginfo_t *info, void *ucontext)
-{ //printf("handler");
+static void handler(__attribute__((unused)) int signum, siginfo_t *info, __attribute__((unused)) void *ucontext)
+{ 
     char process_name[1024], *exit_status = "normally", file[256];
     char text[2048];
     pid_t process_pid;
     int fd;
+    int status = 0;
     //get pid of process
     process_pid = info->si_pid;
+    if (info->si_status == SIGCONT)
+    {
+        return;
+    }
     //check if it is of foreground
     if (process_pid == fgpid)
     {
         fgpid = -1;
         //printf("i got executed");
-        wait(NULL);
+        // WUNTRACED used to stop waiting when suspended
+
+        waitpid(info->si_pid, &status, WUNTRACED);
+
+        if (WEXITSTATUS(status) == SIGTSTP)
+        {
+            add_job(info->si_pid);
+        }
+
         return;
     }
+    if (arguments[0] != NULL)
+    {
+        if (strcmp(arguments[0], "fg") == 0 || strcmp(arguments[0], "bg") == 0)
+        {
+            return;
+        }
+    }
+    //printf("a%s",arguments[0]);
+
     //check exit status
     if (info->si_status)
     {
@@ -114,37 +132,28 @@ static void handler(int signum, siginfo_t *info, void *ucontext)
         close(fd);
     }
     //-------------------------------------------------------------------------
-    int status = 0;
 
-    waitpid(info->si_pid, &status, WNOHANG);
+    //waitpid(getpgid(id), NULL, WUNTRACED);
+
+    int x = waitpid(info->si_pid, &status, WNOHANG);
+    //printf("%d",x);
     fd = open(file, O_RDONLY);
     if (fd == -1)
     {
         delete_jobs(process_pid);
     }
 
-    if (WIFEXITED(status))
-    {
-        sprintf(text, "%s with pid %d exited %s\n", process_name, process_pid, exit_status);
-        write(1, text, strlen(text));
-    }
-    else if (WIFSTOPPED(status))
+
+    if (WIFSTOPPED(status))
     {
         sprintf(text, "%s with pid %d stopped\n", process_name, process_pid);
         write(1, text, strlen(text));
     }
-
-    //write(1, text, strlen(text));
-
-    //int status = 0;
-    /* The WNOHANG flag means that if there's no news, we don't wait*/
-    // if (info->si_pid == waitpid(info->si_pid, &status, WNOHANG))
-    // {
-    //     /* A SIGCHLD doesn't necessarily mean death - a quick check */
-    //     if (WIFEXITED(status) || WTERMSIG(status)||WIFSTOPPED(status))
-    //         write(1, text, strlen(text));
-    // }
-    return;
+    else{
+         sprintf(text, "%s with pid %d exited %s\n", process_name, process_pid, exit_status);
+        write(1, text, strlen(text));
+    }
+        return;
 }
 
 void check_child_process()
@@ -168,6 +177,6 @@ void check_child_process()
         perror("check baground process");
         return;
     }
-    //sigprocmask(SIG_UNBLOCK, &sa.sa_mask, NULL);
+    sigprocmask(SIG_UNBLOCK, &sa.sa_mask, NULL);
     /* Handle error */;
 }

@@ -207,7 +207,7 @@ void switch_input_output(int *open_case, char *file)
     }
     if (fd1 < 0)
     {
-        printf("Couldn't open input file");
+        printf("Couldn't open input file\n");
         *open_case = 0;
     }
     else

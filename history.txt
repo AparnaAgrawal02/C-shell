@@ -1,20 +1,20 @@
-sleep 50 
-sleep 50 &
+sleep 10
 jobs
-sig 2 9
+sleep 10
 jobs
-
-bg 1 
-jobs
-sleep 50
-bg 1
-bg 3
-jobs
-sig 3 9
-sleep 50 &
-fg 4
-jobs
-bg 5
-fg 5
-cat ls.c | wc
 replay -command echo "hi" -interval 3 -period 6
+cd testing 
+echo hello > output.txt; cat output.txt;
+cat < example.txt 
+echo hello > new.txt ; echo second line >> new.txt ; cat new.txt ;
+sort file1.txt > lines_sorted.txt ; cat < lines_sorted.txt;
+diff file1.txt file2.txt > output.txt ; cat < output.txt
+more example.txt | wc
+grep "int" example.txt | cat file1.txt | wc
+ls | grep .txt; seq 1 10 | wc -l ;
+ls -l | sort -nr | head -n 5
+echo “Hello world” | wc -c
+ls | grep .txt > out.txt ; cat out.txt;
+cat < example.txt | wc -l > out2.txt ; cat out2.txt 
+echo "The number of lines is:" ; wc -l < out2.txt ;
+cat < out.txt | cat example.txt

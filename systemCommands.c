@@ -135,7 +135,7 @@ static void handler(__attribute__((unused)) int signum, siginfo_t *info, __attri
 
     //waitpid(getpgid(id), NULL, WUNTRACED);
 
-    int x = waitpid(info->si_pid, &status, WNOHANG);
+    waitpid(info->si_pid, &status, WNOHANG);
     //printf("%d",x);
     fd = open(file, O_RDONLY);
     if (fd == -1)

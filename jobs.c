@@ -255,8 +255,7 @@ int get_process_id(int job_no)
     else
     {
         job *p = job_head;
-        job *prev = NULL;
-        //printf("[%d] %s %s [%d]", job_head->job_number, job_head->status, job_head->name, job_head->process_ID);
+       
         if (p->job_number == job_no)
         {
             return p->process_ID;
@@ -269,7 +268,6 @@ int get_process_id(int job_no)
                 return p->process_ID;
             }
 
-            prev = p;
             p = p->next;
         }
         return -1;
